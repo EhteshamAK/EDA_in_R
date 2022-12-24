@@ -1,0 +1,103 @@
+---
+title: "Life_Expectancy_with_suicideRate"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+### Load libraries
+ 
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(stringr)
+```
+
+### Importing the dataset
+
+```{r}
+life_ex <- read.csv("C:\\Users\\Pc World Computers\\OneDrive\\Desktop\\Downloads\\Life expectancy.csv")
+suicide_rate <- read.csv("C:\\Users\\Pc World Computers\\OneDrive\\Desktop\\Downloads\\Suicide Rate.csv")
+
+```
+
+
+
+### Combine these datasets with "Country" using merge function
+
+```{r}
+life_df <- merge(life_ex,suicide_rate, by="Country")
+view(head(life_df))
+```
+
+### Columns in the dataset
+
+```{r}
+colnames(life_df)
+```
+
+### Rename the columns 
+
+```{r}
+life_df <- life_df %>%
+         rename("country"="Country",
+                "men_life_expectancy"="Life.Expectancy..years....Men",
+                "women_life_expectancy"="Life.Expectancy..years....Women",
+                "happiness_score"="Happiness.Score",
+               "women_fertility_rate" ="Fertility.Rate..births.per.woman.",
+               "gdp_per_capita"="GDP.per.capita",
+               "suicide_rate"="Suicide.rate"
+                )
+view(head(life_df))
+```
+
+### Check null values in dataset
+
+```{r}
+colSums(is.na(life_df))
+```
+### Qno1 - Top 5 countries with men highest life expectancy rate?
+```{r}
+top5_men <- life_df %>%
+          select(country,men_life_expectancy)%>%
+          filter(men_life_expectancy != 0)%>%
+          arrange(desc(men_life_expectancy))
+top5_men = head(top5_men,5)
+top5_men
+
+```
+###  Qno2 - Top 5 countries with women highest life expectancy rate?
+
+```{r}
+top5_women <- life_df %>%
+          select(country,women_life_expectancy)%>%
+          filter(women_life_expectancy != 0)%>%
+          arrange(desc(women_life_expectancy))
+top5_women = head(top5_women,5)
+top5_women
+
+```
+###  Qno3 - Top 5 countries with the highest suicide rate and happiness score?
+
+```{r}
+top5_happiness_suicide <- life_df %>%
+          select(country,happiness_score,suicide_rate)%>%
+          filter(happiness_score & suicide_rate != 0)%>%
+          arrange(desc(happiness_score),desc(suicide_rate))
+
+head(top5_happiness_suicide,5)
+
+```
+### Qno4- Top 5 countries with the highest suicide rate and highest gdp?
+
+```{r}
+top5_suicide_gdp <- life_df %>%
+                select(country,suicide_rate,gdp_per_capita,men_life_expectancy,women_life_expectancy) %>%
+                arrange(desc(suicide_rate),gdp_per_capita)
+
+head(top5_suicide_gdp,5)
+```
+
